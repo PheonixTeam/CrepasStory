@@ -2,26 +2,26 @@
 create sequence seq_user_idx;
 
 create table ic_user (
-	user_idx int,										-- À¯Àú ÀÏ·Ã¹øÈ£ primary key
-	username varchar2(100) not null,					-- À¯Àú¸í
-	userid varchar2(255) unique not null,				-- À¯Àú ¾ÆÀÌµğ
-	password varchar2(255) not null,					-- ÆĞ½º¿öµå
-	birthday varchar2(100),								-- »ç¿ëÀÚ »ıÀÏ
-	phonenumber varchar2(100) not null,					-- ÇÚµåÆù¹øÈ£
-	addr varchar2(200) not null,						-- ÁÖ¼Ò
-	profile varchar2(100) null							-- ÇÁ·ÎÇÊ
+	user_idx int,							-- ìœ ì € ì¼ë ¨ë²ˆí˜¸ primary key
+	username varchar2(100) not null,				-- ìœ ì €ëª…
+	userid varchar2(255) unique not null,				-- ìœ ì € ì•„ì´ë””
+	password varchar2(255) not null,				-- íŒ¨ìŠ¤ì›Œë“œ
+	birthday varchar2(100),						-- ì‚¬ìš©ì ìƒì¼
+	phonenumber varchar2(100) not null,				-- í•¸ë“œí°ë²ˆí˜¸
+	addr varchar2(200) not null,					-- ì£¼ì†Œ
+	profile varchar2(100) null					-- í”„ë¡œí•„
 )
 
 alter table ic_user add constraint pk_user_idx primary key(user_idx)
 
 -- sample
-insert into ic_user values(seq_user_idx.nextVal,'ÀÌ´Ù¿î','test','test','90','111','°æ±â','³²','a');
-insert into ic_user values(seq_user_idx.nextVal,'¹Ú¼º¼ö','test2','test','97','111','°æ±â','³²','a');
+insert into ic_user values(seq_user_idx.nextVal,'ì´ë‹¤ìš´','test','test','90','111','ê²½ê¸°','ë‚¨','a');
+insert into ic_user values(seq_user_idx.nextVal,'ë°•ì„±ìˆ˜','test2','test','97','111','ê²½ê¸°','ë‚¨','a');
 
-insert into ic_user values(seq_user_idx.nextVal,'ÃÖ½Â¿ë','test3','test','97','111','°æ±â','³²','a');
-insert into ic_user values(seq_user_idx.nextVal,'ÀÏ±æµ¿','test4','test','97','111','°æ±â','³²','a');
-insert into ic_user values(seq_user_idx.nextVal,'ÀÌ±æµ¿','test5','test','97','111','°æ±â','³²','a');
-insert into ic_user values(seq_user_idx.nextVal,'»ï±æµ¿','test6','test','97','111','°æ±â','³²','a');
+insert into ic_user values(seq_user_idx.nextVal,'ìµœìŠ¹ìš©','test3','test','97','111','ê²½ê¸°','ë‚¨','a');
+insert into ic_user values(seq_user_idx.nextVal,'ì¼ê¸¸ë™','test4','test','97','111','ê²½ê¸°','ë‚¨','a');
+insert into ic_user values(seq_user_idx.nextVal,'ì´ê¸¸ë™','test5','test','97','111','ê²½ê¸°','ë‚¨','a');
+insert into ic_user values(seq_user_idx.nextVal,'ì‚¼ê¸¸ë™','test6','test','97','111','ê²½ê¸°','ë‚¨','a');
 
 
 select * from ic_user
