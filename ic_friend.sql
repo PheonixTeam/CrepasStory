@@ -2,16 +2,16 @@
 create sequence seq_friend_idx;
 
 create table ic_friend (
-	f_idx int,		 					-- Ä£±¸ ÀÏ·Ã¹øÈ£
-	user_idx int,						-- ³» ÀÏ·Ã¹øÈ£
-	friend_idx int,						-- Ä£±¸ ÀÏ·Ã¹øÈ£
-	state int,							-- »óÅÂ (0=¿äÃ», 1=°ÅÀı, 2=¼ö¶ô, 3=¼ö½Å)
-	regdate date						-- µî·Ï ³¯Â¥
+	f_idx int,		 		-- ì¹œêµ¬ ì¼ë ¨ë²ˆí˜¸
+	user_idx int,				-- ë‚´ ì¼ë ¨ë²ˆí˜¸
+	friend_idx int,				-- ì¹œêµ¬ ì¼ë ¨ë²ˆí˜¸
+	state int,				-- ìƒíƒœ (0=ìš”ì²­, 1=ê±°ì ˆ, 2=ìˆ˜ë½, 3=ìˆ˜ì‹ )
+	regdate date				-- ë“±ë¡ ë‚ ì§œ
 )
 
 alter table ic_friend add constraint pk_friend_idx primary key(f_idx)
 
--- ¿Ü·¡Å° ¼³Á¤ (foreign)
+-- ì™¸ë˜í‚¤ ì„¤ì • (foreign)
 alter table ic_friend add constraint fk_user_idx foreign key(user_idx)
 	references ic_user(user_idx) on delete cascade
 	
@@ -19,13 +19,13 @@ alter table ic_friend add constraint fk_friend_idx foreign key(friend_idx)
 	references ic_user(user_idx) on delete cascade
 	
 -- sample
--- 1(ÀÌ´Ù¿î) => 21(¹Ú¼º¼ö)Ä£±¸ 
+-- 1(ì´ë‹¤ìš´) => 21(ë°•ì„±ìˆ˜)ì¹œêµ¬ 
 insert into ic_friend values(seq_friend_idx.nextVal,
 							1,
 							42,
 							2,
 							sysdate)
--- 21(¹Ú¼º¼ö) => 1(ÀÌ´Ù¿î)Ä£±¸
+-- 21(ë°•ì„±ìˆ˜) => 1(ì´ë‹¤ìš´)ì¹œêµ¬
 insert into ic_friend values(seq_friend_idx.nextVal,
 							42,
 							1,
@@ -33,14 +33,14 @@ insert into ic_friend values(seq_friend_idx.nextVal,
 							sysdate)
 
 							
--- 1(ÀÌ´Ù¿î) => 41(ÃÖ½Â¿ë) Ä£±¸
+-- 1(ì´ë‹¤ìš´) => 41(ìµœìŠ¹ìš©) ì¹œêµ¬
 insert into ic_friend values(seq_friend_idx.nextVal,
 							1,
 							41,
 							2,
 							sysdate)
 							
--- 41(ÃÖ½Â¿ë) => 1(ÀÌ´Ù¿î) Ä£±¸
+-- 41(ìµœìŠ¹ìš©) => 1(ì´ë‹¤ìš´) ì¹œêµ¬
 insert into ic_friend values(seq_friend_idx.nextVal,
 							41,
 							1,
