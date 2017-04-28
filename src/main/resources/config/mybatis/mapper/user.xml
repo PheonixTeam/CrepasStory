@@ -26,7 +26,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		#{ birthday },
 		#{ phonenumber },
 		#{ addr },
-		'default',
 		#{ profile }
 		)
 	</insert>

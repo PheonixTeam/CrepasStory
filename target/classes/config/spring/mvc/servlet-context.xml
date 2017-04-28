@@ -54,6 +54,7 @@
 	
 	<beans:bean class="com.ic.crepas_story.CommentController">
 		<beans:property name="comment_dao" ref="comment_dao" />
+		<beans:property name="user_dao" ref="user_dao" />
 	</beans:bean>
 	
 	<beans:bean class="com.ic.crepas_story.FriendController">

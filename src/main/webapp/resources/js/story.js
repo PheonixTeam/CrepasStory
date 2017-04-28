@@ -219,13 +219,13 @@ function post_insert(v) {
 	if (confirm("정말 글을 올리시겠습니까?")==false) return;
 	
 	// form : story.jsp <form> 안의 내용 가져옴
-	var form = $('form')[0];
+	var form = $('#photo_form')[0];
 	var formData = new FormData(form);
 	
 	/*formData.append("photo1", $("div[id='preview'] > img")[1]);
 	formData.append("photo2", $("div[id='preview'] > img")[2]);*/
 	
-	formData.append("photo", $("input[id=photo]")[0].files[0]);
+	formData.append("photo", $("#photo")[0].files[0]);
 	//formData.append("photo", $("input[id=photo]")[0].files[1]);
 	formData.append("content", $("div[id='content']").html());
 	

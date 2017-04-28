@@ -9,7 +9,6 @@ create table ic_user (
 	birthday varchar2(100),								-- 사용자 생일
 	phonenumber varchar2(100) not null,					-- 핸드폰번호
 	addr varchar2(200) not null,						-- 주소
-	gender varchar2(100) not null,						-- 성별
 	profile varchar2(100) null							-- 프로필
 )
 
