@@ -1,17 +1,7 @@
 
 create sequence seq_post_idx;
 
--- ±âÁ¸ DB
-/*create table ic_post (
-	post_idx int,								-- ÀÏ·Ã¹øÈ£
-	user_idx int,								-- ÀÛ¼ºÀÚ ÀÏ·Ã¹øÈ£
-	photoid varchar2(100),						-- »çÁøID
-	content clob,								-- °Ô½Ã¹° ³»¿ë
-	emotion int	,								-- °¨Á¤ »óÅÂ
-	regdate date								-- ¾÷·Îµå ³¯Â¥
-) */
-
--- ¼öÁ¤ DB (photoid -> photoname º¯°æ)
+-- ìˆ˜ì • DB
 create table ic_post (
 	post_idx int,
 	user_idx int,
@@ -21,7 +11,7 @@ create table ic_post (
 
 alter table ic_post add constraint pk_post_idx primary key(post_idx)
 
--- ¿Ü·¡Å° ¼³Á¤ (foreign)
+-- ì™¸ëž˜í‚¤ ì„¤ì • (foreign)
 alter table ic_post add constraint fk_post_idx foreign key(user_idx)
 	references ic_user(user_idx) on delete cascade
 
@@ -41,7 +31,7 @@ insert into ic_post values(
 	seq_post_idx.nextVal,
 	1,
 	null,
-	'¾Æ¾Æ¾Æ¾Æ',
+	'ì•„ì•„ì•„ì•„',
 	null,
 	sysdate
 )
