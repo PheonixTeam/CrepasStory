@@ -20,51 +20,230 @@
 	type="text/javascript"></script>
 
 <script type="text/javascript">
-	//이미지 미리보기
-	function previewFiles() {
 
-		var preview = document.querySelector('#preview');
-		var files = document.querySelector('#photo').files;
+$(function(){
+	$(".user_modify_form").draggable();
+	var insert_url = path + '/user_modify.do';
+	$("form#ajax_form").submit(function(event){
+		 
+		  //disable the default form submission
+		  event.preventDefault();
+		 
+		  //grab all form data  
+		  var formData = new FormData($(this)[0]);
 
-		// 이미지 미리보기 1개로 제한
-		if ($('#preview > img').length < 1) {
-			function readAndPreview(file) {
-				// 'file.name' 형태의 확장자 규칙에 주의
-				if (/\.(jpe?g|png|gif)$/i.test(file.name)) {
-					var reader = new FileReader();
+		  $.ajax({
+		    url: insert_url,
+		    type: 'POST',
+		    data: formData,
+		    async: false,
+		    cache: false,
+		    contentType: false,
+		    processData: false,
+		    success: function (returndata) {
+		    	ShowMessage("회원정보 수정 성공!");
+		    	location.reload();
+		    }
+		  });
+		 
+		  return false;
+		});
+	
+});
+//회원 정보 보기
+function member_info() {
+	var member_disp = document.getElementById("modify_form");
+	
+	member_disp.style.left = (window.innerWidth/2 - 800) + 'px';
+	member_disp.style.top = (window.innerHeight/2 - 500) + 'px';
+	$('#modify_form').css({"visibility":"visible"});
+}
+//유저정보 수정
+function user_update() {
 
-					reader.addEventListener("load", function() {
+	if (confirm("정말로 수정하시겠어요?") == false)
+		return;
 
-						var image = new Image();
-						image.height = 100;
-						image.title = file.name;
-						image.src = this.result;
-						preview.appendChild(image);
-					}, false);
-
-					reader.readAsDataURL(file);
-
-				} else {
-					alert('이미지파일만 등록하세요');
-					return;
-				}
-			}
-
-			if (files) {
-				[].forEach.call(files, readAndPreview);
+	$.ajax({
+		type : 'GET',
+		url : 'user_modify.do',
+		data : {
+			'user_idx' : my_idx,
+			'password' : password,
+			'phonenumber' : phonenumber,
+			'addr' : addr,
+			'profile' : profile
+		},
+		dataType : 'json',
+		success : function(result) {
+			if (result.result == 'yes') {
+				alert("회원정보 수정이 성공적으로 이루어 졌습니다.");
+				location.href = "index.do";
+			} else {
+				alert("회원정보 수정이 실패하였습니다.");
+				return;
 			}
 		}
+	});
+}
+
+function edit_userdata(){
+
+	
+}
+//사진 모아보기
+function photo_show(user_idx) {
+	$("#bg_hide").css({"visibility":"visible","height":$(document).height()});
+	var photo_disp = document.getElementById("photo_disp");
+	
+	photo_disp.style.left = (window.innerWidth/2 - 400) + 'px';
+	photo_disp.style.top = (window.innerHeight/2 - 230) + 'px';
+	
+	photo_disp.style.display = 'block';
+}
+
+function cancel() {
+	var photo_disp = document.getElementById("photo_disp");
+	photo_disp.style.display = 'none';
+	$("#bg_hide").css({"visibility":"hidden","height":0});
+}
+
+//이미지 미리보기
+function previewFiles() {
+	
+	var preview = document.querySelector('#preview');
+	var files = document.querySelector('#photo').files;
+
+	// 이미지 미리보기 1개로 제한
+	if($('#preview > img').length < 1) {
+		function readAndPreview(file) {
+			// 'file.name' 형태의 확장자 규칙에 주의
+			if(/\.(jpe?g|png|gif)$/i.test(file.name) ) {
+				var reader = new FileReader();
+				
+				reader.addEventListener("load", function() {
+					
+					var image = new Image();
+					image.height = 100;
+					image.title = file.name;
+					image.src = this.result;
+					preview.appendChild(image);
+				}, false);
+				
+				reader.readAsDataURL(file);
+				
+			} else {
+				alert('이미지파일만 등록하세요');
+				return;
+			}
+		}
+	
+		if(files) {
+			[].forEach.call(files, readAndPreview);
+		}
 	}
+}
+function preViewProfile() {
+	
+	var preview = document.querySelector('#profile');
+	var files = document.querySelector('#input_file').files;
+
+		function readAndPreview(file) {
+			// 'file.name' 형태의 확장자 규칙에 주의
+			if(/\.(jpe?g|png|gif)$/i.test(file.name) ) {
+				var reader = new FileReader();
+				
+				reader.addEventListener("load", function() {
+					
+					var image = new Image();
+					image.height = 100;
+					image.title = file.name;
+					$("#profile > img").attr("src",this.result);
+					
+				}, false);
+				
+				reader.readAsDataURL(file);
+				
+			} else {
+				alert('이미지파일만 등록하세요');
+				return;
+			}
+		}
+	
+		if(files) {
+			[].forEach.call(files, readAndPreview);
+		}
+	
+}
+//유저정보 수정
+function user_update(f){
+   
+   var user_idx = $(f).find("input[name='user_idx']").val();
+   var password = $(f).find("input[name='password']").val();
+   var phonenumber = $(f).find("input[name='phonenumber']").val();
+   var addr = $(f).find("input[name='addr']").val();
+   
+   
+   if(confirm("정말로 수정하시겠어요?")==false) return;
+   
+   $.ajax({
+      type : 'GET',
+      url : 'user_modify.do',
+      data : {'user_idx':my_idx, 'password' : password, 'phonenumber' : phonenumber, 'addr' : addr},
+      dataType : 'json',
+      success : function(result) {
+         if(result.result=='yes') {
+            alert("회원정보 수정이 성공적으로 이루어 졌습니다.");
+            location.href = "index.do";
+         }
+         else {
+            alert("회원정보 수정이 실패하였습니다.");
+            return;
+         }
+      }
+   });
+}
 </script>
 
 </head>
 <body>
+
 	<!-- Start -->
-	<!-- 메뉴 -->
+   
+   <!-- 회원정보 -->
+   <div class="user_modify_form" id="modify_form">    
+        <form action="user_modify.do" enctype="multipart/form-data" method="POST" id="ajax_form">
+           <input type="file" name="photo" id="input_file" onchange="preViewProfile();">
+           <a id="profile">
+              <img onclick="$('#input_file').click();" src="${pageContext.request.contextPath}/resources/images/${ sessionScope.user.profile }">
+           </a>
+           <div>회원정보</div>
+           <input type="hidden" name="user_idx" value="${ sessionScope.user.user_idx }">
+           <input type="text" value="${ sessionScope.user.userid }" disabled>
+           <input type="password" name="password" value="${ sessionScope.user.password }">
+           <input type="text" value="${ sessionScope.user.username }" disabled />
+          <input type="date" value="${ sessionScope.user.birthday }" disabled />
+          <input type="tel" name="phonenumber" value="${ sessionScope.user.phonenumber }"/>
+          <a href="javascript:get_addr();">
+             <input type="text" name="addr" value="${ sessionScope.user.addr }">
+           </a>
+        </form>
+        <a href="javascript:$('form#ajax_form').submit();">
+           <button>수정</button>
+        </a>
+        <a href="javascript:$('.user_modify_form').css({visibility:'hidden'});">
+           <button>취소</button>
+        </a>
+     </div>
+   
+	<div id="bg_hide"></div>
+		<!-- 유저 데이터 수정 -->
+
 	<div class="menu_bundle">
+	
 		<div class="menu">
-			<span
-				onclick="location.href='${pageContext.request.contextPath}/logout.do'">로그아웃</span>
+			<span onclick="location.href='${pageContext.request.contextPath}/logout.do'">로그아웃</span>
+			<span onclick="member_info();">회원정보</span>
 		</div>
 	</div>
 	<!-- 수정폼 -->
@@ -80,6 +259,7 @@
 
 	<!-- 메뉴 구성 -->
 	<nav style="display: none;">
+		
 		<a href="#" class="logo"> <img
 			src="${pageContext.request.contextPath}/resources/images/logo.png">
 		</a>
@@ -106,44 +286,46 @@
 		<!-- 메인(홈) -->
 		<div class="home">
 			<a href="#"> <img
-				src="${pageContext.request.contextPath}/resources/images/gd.jpg">
+				src="${pageContext.request.contextPath}/resources/images/${ sessionScope.user.profile }">
 			</a> <a href="#">
 				<div class="nick">${ sessionScope.user.username }</div>
 			</a>
 			<div class="home_menu">
-				<a href="#" onmouseover="$(this).css({color : '#778844'});"
-					onmouseleave="$(this).css({color : 'black'});"> 전체 </a> <a href="#"
+				<a onmouseover="$(this).css({color : '#778844'});"
+					onmouseleave="$(this).css({color : 'black'});"> 전체 </a>
+					
+				<a onclick="photo_show('${ sessionScope.user.user_idx }');"
 					onmouseover="$(this).css({color : '#778844'});"
-					onmouseleave="$(this).css({color : 'black'});"> 사진 </a> <a href="#"
-					onmouseover="$(this).css({background : '#cccccc', color : '#888888'});"
-					onmouseleave="$(this).css({background : '#777777', color : 'white'});">
-					내정보 </a>
+					onmouseleave="$(this).css({color : 'black'});"> 사진 </a>
+				<a onclick="member_info();" 
+				    onmouseover="$(this).css({background : '#cccccc', color : '#888888'});" 
+				    onmouseleave="$(this).css({background : '#777777', color : 'white'});">	내정보</a>
 			</div>
 		</div>
 
 		<!-- 에디터 -->
 		<form id="photo_form" method="POST" enctype="multipart/form-data">
-			<div class="editor">
-				<input type="file" id="photo" name="photo" onchange="previewFiles()">
-				<div class="tool">
-					<a href="javascript:$('.editor > input[type=\'file\']').click();">
-						<img
-						src="${pageContext.request.contextPath}/resources/images/photo.png">
-					</a> <a href="javascript:$('.editor > input[type=\'file\']').click();">
-						<img
-						src="${pageContext.request.contextPath}/resources/images/movie.png">
-					</a> <a href="#"> <img
-						src="${pageContext.request.contextPath}/resources/images/link.png">
-					</a>
-					<!-- Preview 이미지 보여지는 곳 -->
-					<div id="preview"></div>
-				</div>
-				<div id="content" class="content" onfocus="$(this).html('');"
-					contenteditable="true">내용을 입력해주세요</div>
-				<a href="#">
-					<button onclick="post_insert($(this).parent().parent());">POST</button>
+		<div class="editor">
+			<input type="file" id="photo" name="photo" onchange="previewFiles()">
+			<div class="tool">
+				<a href="javascript:$('.editor > input[type=\'file\']').click();">
+					<img
+					src="${pageContext.request.contextPath}/resources/images/photo.png">
+				</a> <a href="javascript:$('.editor > input[type=\'file\']').click();">
+					<img
+					src="${pageContext.request.contextPath}/resources/images/movie.png">
+				</a> <a href="#"> <img
+					src="${pageContext.request.contextPath}/resources/images/link.png">
 				</a>
+				<!-- Preview 이미지 보여지는 곳 -->
+				<div id="preview"></div>
 			</div>
+			<div id="content" class="content" onfocus="$(this).html('');"
+				contenteditable="true">내용을 입력해주세요</div>
+			<a href="#">
+				<button onclick="post_insert($(this).parent().parent());">POST</button>
+			</a>
+		</div>
 		</form>
 
 		<!-- 포스팅 데이터 -->
@@ -151,56 +333,76 @@
 			<c:forEach var="post" items="${ list }">
 
 				<div class="post_data">
+					<!-- 픽박스 -->
 					<div class="pick_box">
-						<a
-							onclick="post_update_form($(this).parent().parent());saveScroll=$('body').scrollTop();">수정</a>
-						<a
-							onclick="post_delete($(this).parent().parent());saveScroll=$('body').scrollTop();">삭제</a>
+						<a onclick="post_update_form($(this).parent().parent());saveScroll=$('body').scrollTop();">수정</a>
+						<a onclick="post_delete($(this).parent().parent());saveScroll=$('body').scrollTop();">삭제</a>
 					</div>
-					<a class="profile_img" href="#"> <img
-						src="${pageContext.request.contextPath}/resources/images/gd.jpg">
-					</a> <a class="pick_view"
-						onclick="saveScroll=$('body').scrollTop();pickbox($(this).parent());">
-						<img
+					<a class="profile_img"> 
+						<img src="${pageContext.request.contextPath}/resources/images/${ post.user.profile }">
+					</a> 
+					<a class="pick_view"
+						onclick="saveScroll=$('body').scrollTop();pickbox($(this).parent());"> <img
 						src="${pageContext.request.contextPath}/resources/images/more.png">
-					</a> <a href="#">
-						<div class="nick">${ post.username }</div>
+					</a> 
+					
+					<a href="#">
+						<div class="nick">${ post.user.username }</div>
 					</a>
 					<div class="bundle">
-						<!-- 업로드한 이미지 출력 -->
-						<c:forEach var="photo" items="${ post.photo }">
-							<!-- 업로드한 이미지가 없을 경우 -->
-							<c:if test="${ photo.photoname eq 'no_file' }">
-								<div>
-									<img onerror="this.style.display='none'" alt='' />
-								</div>
-							</c:if>
-							<!-- 업로드한 이미지가 있을 경우 -->
-							<c:if test="${ photo.photoname ne 'no_file' }">
-								<div class="photo" style="display: block;">
-									<img
-										src="${ pageContext.request.contextPath }/resources/images/${ photo.photoname }"
-										width="200">
-								</div>
-							</c:if>
-						</c:forEach>
-
-						<div class="content">${ post.content }</div>
+					<!-- 업로드한 이미지 출력 -->
+					<c:forEach var="photo" items="${ post.photo }">
+						<!-- 업로드한 이미지가 없을 경우 -->
+						<c:if test="${ photo.photoname eq 'no_file' }">
+							<div>
+								<img onerror="this.style.display='none'" alt='' />
+							</div>
+						</c:if>
+						<!-- 업로드한 이미지가 있을 경우 -->
+						<c:if test="${ photo.photoname ne 'no_file' }">
+							<div class="photo" style="display: block;">
+								<img
+									src="${ pageContext.request.contextPath }/resources/images/${ photo.photoname }"
+									width="200">
+							</div>
+						</c:if>
+					</c:forEach>
+					<div class="content">${ post.content }</div>
 					</div>
+					<!-- 사진 모아보기 Form -->
+					<div id="photo_disp" style="display: none;">
+						<div id="photo_box">
+							<c:forEach var="photo_all" items="${ post.photo_all }">
+								<c:if test="${ photo_all.photoname ne 'no_file' }">
+									<div class="photo_type">
+										<img src="${ pageContext.request.contextPath }/resources/images/${ photo_all.photoname }">
+										<div>업로드 날짜<br>${ photo_all.regdate }</div>
+									</div>
+								</c:if>
+							</c:forEach>
+						</div>
+
+						<div id="cancel">
+							<img src="${pageContext.request.contextPath}/resources/images/x.png" onclick="cancel();">
+						</div>
+					</div>
+
+					
+					<!-- 댓글 작성 -->
 					<div class="comment_write">
-						<a href="#"> <img
-							src="${pageContext.request.contextPath}/resources/images/heart.png"
-							class="heart">
-						</a> <input type="text"> <input name="post_idx" type="hidden"
-							value="${ post.post_idx }"> <input name="user_idx"
-							type="hidden" value="${ post.user_idx }"> <input
-							name="username" type="hidden" value="${ post.username }">
-						<a href="#">
-							<button
-								onclick="comment_insert($(this).parent().parent());saveScroll=$('body').scrollTop();">작성</button>
+						<a> 
+							<img src="${pageContext.request.contextPath}/resources/images/heart.png" class="heart">
+						</a> 
+						<input type="text"> 
+						<input name="post_idx" type="hidden" value="${ post.post_idx }"> 
+						<input name="user_idx" type="hidden" value="${ post.user_idx }"> 
+						<input name="username" type="hidden" value="${ post.user.username }">
+						<a>
+							<button onclick="comment_insert($(this).parent().parent());saveScroll=$('body').scrollTop();">작성</button>
 						</a>
 					</div>
 
+					<!-- 댓글 load -->
 					<div id="comment_list_${ post.post_idx }">
 
 						<c:if test="${ post.comment ne null}">
@@ -208,8 +410,8 @@
 								<div class="comment_list">
 									<div class="comment" style="display: block;">
 										<a href="javascript:board('${ comment.user_idx }');"> <img
-											src="${pageContext.request.contextPath}/resources/images/gd.jpg">
-										</a> <a href="javascript:board('${ comment.user_idx }');"> <span>${ comment.username }</span>
+											src="${pageContext.request.contextPath}/resources/images/${ comment.user.profile }">
+										</a> <a href="javascript:board('${ comment.user_idx }');"> <span>${ comment.user.username }</span>
 										</a> <span> <span>${ comment.content }</span> <input
 											type="hidden" name="comment_idx"
 											value="${ comment.comment_idx }"> <input
@@ -254,7 +456,7 @@
 		<!-- 본인의 사진, 이름 클릭 시 메인화면으로 -->
 		<div class="profile">
 			<a href="index.do"> <img
-				src="${pageContext.request.contextPath}/resources/images/gd.jpg">
+				src="${pageContext.request.contextPath}/resources/images/${ sessionScope.user.profile }">
 			</a> <a href="index.do"> <span>${ sessionScope.user.username }</span>
 			</a>
 		</div>
@@ -268,14 +470,10 @@
 					onmouseleave="$(this).find('button').css({visibility: 'hidden'})">
 					<!-- 클릭 시 친구의 피드화면으로 -->
 					<a href="javascript:board('${friend.friend_idx}');"> <img
-						src="${pageContext.request.contextPath}/resources/images/gd.jpg">
+						src="${pageContext.request.contextPath}/resources/images/${ friend.friend_info.profile}">
 					</a> <a href="javascript:board('${friend.friend_idx}');"
 						class="friend_name"> ${ friend.friend_info.username } </a>
-					<button onclick="friend_delete('${ friend.friend_idx}');"
-						style="border: 0; background: #fafafa;">
-						<img
-							src="${pageContext.request.contextPath}/resources/images/link.png">
-					</button>
+					<button onclick="friend_delete('${ friend.friend_idx}');">친구끊기</button>
 				</div>
 				<hr />
 			</c:forEach>

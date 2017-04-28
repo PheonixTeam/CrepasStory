@@ -5,6 +5,15 @@ public class CommentVo {
 	int comment_idx, post_idx, user_idx;
 	String username, content, regdate;
 	
+	UserVo user;
+	
+	public UserVo getUser() {
+		return user;
+	}
+	public void setUser(UserVo user) {
+		this.user = user;
+	}
+	
 	public int getComment_idx() {
 		return comment_idx;
 	}

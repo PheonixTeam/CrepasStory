@@ -21,6 +21,7 @@ import dao.FriendDao;
 import dao.PhotoDao;
 import dao.PostDao;
 import dao.UserDao;
+import vo.CommentVo;
 import vo.FriendVo;
 import vo.PhotoVo;
 import vo.PostVo;
@@ -84,24 +85,39 @@ public class PostController {
 		this.friend_dao = friend_dao;
 	}
 
+	// 처음 로그인 후 불러오는 게시글 목록(댓글 사진 포함)
 	@RequestMapping(value = "/list.do", method = RequestMethod.GET)
 	public String main(@RequestParam(value = "endPage", defaultValue = "5") int endPage,
 			@RequestParam(value = "startPage", defaultValue = "1") int startPage, Model model) {
 
 		Map pageMap = new HashMap();
+		// 세선에서 유저정보 불러옴
 		UserVo user = (UserVo) session.getAttribute("user");
 
+		// 스크롤 페이징 설정
 		pageMap.put("user_idx", user.getUser_idx());
 		pageMap.put("start", startPage);
 		pageMap.put("end", endPage);
 
+		// 로그인 유저 게시글 불러오기(페이징 적용)
 		List<PostVo> list = post_dao.selectList(pageMap);
 		for (PostVo vo : list) {
+			// 게시글 당 댓글목록
 			vo.setComment(comment_dao.selectList(vo.getPost_idx()));
-			vo.setUsername(user.getUsername());
+			// 댓글에 댓글 단 유저정보 추가
+			for(CommentVo comment : vo.getComment()) {
+				UserVo c_user = user_dao.selectOne(comment.getUser_idx());
+				comment.setUser(c_user);
+			}
+			// 게시글 쓴 유저 정보
+			vo.setUser(user);
+			// 게시글 사진
 			vo.setPhoto(photo_dao.selectList(vo.getPost_idx()));
+			
+			vo.setPhoto_all(photo_dao.All_List(user.getUser_idx()));
 		}
 
+		// 화면 우측 친구목록 조회
 		List<FriendVo> friend = friend_dao.selectList(user.getUser_idx());
 		for (FriendVo vo : friend) {
 			UserVo friend_info = user_dao.selectOne(vo.getFriend_idx());
@@ -129,8 +145,14 @@ public class PostController {
 		List<PostVo> list = post_dao.selectList(pageMap);
 		for (PostVo vo : list) {
 			vo.setComment(comment_dao.selectList(vo.getPost_idx()));
-			vo.setUsername(user.getUsername());
+			for(CommentVo comment : vo.getComment()) {
+				UserVo c_user = user_dao.selectOne(comment.getUser_idx());
+				comment.setUser(c_user);
+			}
+			vo.setUser(user);
 			vo.setPhoto(photo_dao.selectList(vo.getPost_idx()));
+			
+			vo.setPhoto_all(photo_dao.All_List(user.getUser_idx()));
 		}
 
 		return list;
@@ -154,7 +176,11 @@ public class PostController {
 		List<PostVo> list = post_dao.selectList(pageMap);
 		for (PostVo vo : list) {
 			vo.setComment(comment_dao.selectList(vo.getPost_idx()));
-			vo.setUsername(user.getUsername());
+			for(CommentVo comment : vo.getComment()) {
+				UserVo c_user = user_dao.selectOne(comment.getUser_idx());
+				comment.setUser(c_user);
+			}
+			vo.setUser(user);
 			vo.setPhoto(photo_dao.selectList(vo.getPost_idx()));
 		}
 
@@ -163,22 +189,6 @@ public class PostController {
 
 		return map;
 	}
-
-	/*
-	 * @RequestMapping(value="/list.do", method=RequestMethod.GET) public String
-	 * main(Model model){
-	 * 
-	 * UserVo user = (UserVo)session.getAttribute("user");
-	 * 
-	 * 
-	 * List<PostVo> list = post_dao.selectList(user.getUser_idx()); for (PostVo
-	 * vo : list){ vo.setComment(comment_dao.selectList(vo.getPost_idx())); }
-	 * 
-	 * model.addAttribute("list", list);
-	 * 
-	 * 
-	 * return VIEW_PATH + "story.jsp"; }
-	 */
 
 	// 파일 이미지 업로드 추가 코드
 	@RequestMapping(value = "/post_insert.do", method = { RequestMethod.GET, RequestMethod.POST })
@@ -203,8 +213,6 @@ public class PostController {
 			// 절대경로 구하기 (Main Controller에게 요청)
 			String abs_path = application.getRealPath(web_path);
 
-			System.out.println(abs_path);
-			
 			// 저장할 파일 정보
 			File save = new File(abs_path, filename);
 

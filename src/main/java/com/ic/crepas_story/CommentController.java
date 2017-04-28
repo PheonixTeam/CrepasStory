@@ -11,15 +11,24 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import dao.CommentDao;
+import dao.UserDao;
 import vo.CommentVo;
+import vo.UserVo;
 
 @Controller
 @SuppressWarnings({"rawtypes", "unused", "unchecked"})
 public class CommentController {
 
-	Map map;
-	
 	CommentDao comment_dao;
+	UserDao user_dao;
+
+	public UserDao getUser_dao() {
+		return user_dao;
+	}
+
+	public void setUser_dao(UserDao user_dao) {
+		this.user_dao = user_dao;
+	}
 
 	public CommentDao getComment_dao() {
 		return comment_dao;
@@ -32,9 +41,12 @@ public class CommentController {
 	@RequestMapping(value="/comment_list.do", method=RequestMethod.GET)
 	@ResponseBody
 	public List comment_list_json(int post_idx){
-		
+		// 게시글 별 댓글 불러오기
 		List<CommentVo> list = comment_dao.selectList(post_idx);
-		
+		for(CommentVo comment : list) {
+			UserVo user = user_dao.selectOne(comment.getUser_idx());
+			comment.setUser(user);
+		}
 		return list;
 	}
 	
@@ -42,16 +54,20 @@ public class CommentController {
 	@ResponseBody
 	public Map comment_insert(CommentVo vo){
 
+		// 댓글 입력
 		int res = comment_dao.insert(vo);
 		
+		// 업데이트 된 댓글 DB에서 불러와서 업데이트
 		List<CommentVo> list = comment_dao.selectList(vo.getPost_idx());
+		for(CommentVo comment : list) {
+			// 댓글쓴이 유저정보도 Vo에 추가해서 전달
+			UserVo user = user_dao.selectOne(comment.getUser_idx());
+			comment.setUser(user);
+		}
 		
-		map = new HashMap();
-		
+		Map map = new HashMap();
 		map.put("list", list);
-		
 		map.put("post_idx", vo.getPost_idx());
-		
 		
 		return map;
 		
@@ -64,11 +80,13 @@ public class CommentController {
 		int res = comment_dao.update(vo);
 		
 		List<CommentVo> list = comment_dao.selectList(vo.getPost_idx());
+		for(CommentVo comment : list) {
+			UserVo user = user_dao.selectOne(comment.getUser_idx());
+			comment.setUser(user);
+		}
 		
-		map = new HashMap();
-		
+		Map map = new HashMap();
 		map.put("list", list);
-		
 		map.put("post_idx", vo.getPost_idx());
 		
 		return map;
@@ -82,13 +100,14 @@ public class CommentController {
 		int res = comment_dao.delete(vo.getComment_idx());
 		
 		List<CommentVo> list = comment_dao.selectList(vo.getPost_idx());
+		for(CommentVo comment : list) {
+			UserVo user = user_dao.selectOne(comment.getUser_idx());
+			comment.setUser(user);
+		}
 		
-		map = new HashMap();
-		
+		Map map = new HashMap();
 		map.put("list", list);
-		
 		map.put("post_idx", vo.getPost_idx());
-		
 		
 		return map;
 	}

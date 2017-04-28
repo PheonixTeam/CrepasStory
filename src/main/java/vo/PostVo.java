@@ -5,22 +5,30 @@ import java.util.List;
 public class PostVo {
 
 	int post_idx, user_idx;
-	String content, regdate, username;
+	String content, regdate;
 	
+	UserVo user;
 	List<CommentVo> comment;
 	List<PhotoVo> photo;
+	List<PhotoVo> photo_all;
 	
+	public List<PhotoVo> getPhoto_all() {
+		return photo_all;
+	}
+	public void setPhoto_all(List<PhotoVo> photo_all) {
+		this.photo_all = photo_all;
+	}
+	public UserVo getUser() {
+		return user;
+	}
+	public void setUser(UserVo user) {
+		this.user = user;
+	}
 	public List<PhotoVo> getPhoto() {
 		return photo;
 	}
 	public void setPhoto(List<PhotoVo> photo) {
 		this.photo = photo;
-	}
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
 	}
 	public List<CommentVo> getComment() {
 		return comment;

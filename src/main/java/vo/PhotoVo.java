@@ -40,7 +40,7 @@ public class PhotoVo {
 		this.user_idx = user_idx;
 	}
 	public String getRegdate() {
-		return regdate;
+		return regdate.substring(0,19);
 	}
 	public void setRegdate(String regdate) {
 		this.regdate = regdate;

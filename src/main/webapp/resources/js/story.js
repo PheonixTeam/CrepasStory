@@ -13,54 +13,10 @@ var load = 1;
 // 로그인 된 유저(나)의 user_idx (confirm용)
 var my_idx;
 // 메인 화면 피드의 유저정보 저장
-var g_user_idx;
-var g_username;
-// 친구 정보
-var b_friend;
-
-
-/*$(document).ready(function() {
-	
-	$('nav').slideDown(600, function() {
-		$('.body').slideDown("slow", function() {
-			$('.user_menu').slideDown(500, function() {
-				max = $('body').prop("scrollHeight") - $(document).outerHeight();
-
-			});
-		});
-	});
-	$(document).scroll(function() {
-
-		status = window.pageYOffset;
-		// console.log(status);
-		if (sc == 1 && status >= max) {
-			sc = 0;
-
-			myurl = 'list_json.do?startPage=' + page + '&endPage=' + (page + 4);
-
-			$.ajax({
-				type : 'GET',
-				url : myurl,
-				dataType : 'json',
-				success : function(result) {
-					data = result;
-					get_json(data);
-
-					page += 5;
-					if (html != '') {
-						$('.posts').html($('.posts').html() + html);
-						max = $('body').prop("scrollHeight") - $('body').outerHeight();
-					}
-					sc = 1;
-
-
-				}
-			});
-
-
-		}
-	});
-});*/
+var g_user;
+var g_friend_idx;
+// 친구가 맞나?
+var is_friend;
 
 $(document).ready(function() {
 	
@@ -113,20 +69,21 @@ $(document).ready(function() {
 		
 		// 친구 피드
 		else if(load==2) {
+			
 			if (sc == 1 && status > max-100) {
 				sc = 0;
-
-				myurl = 'board.do?user_idx='+ g_user_idx +'&startPage=' + page + '&endPage=' + (page + 4);
+				
+				myurl = 'board.do?user_idx='+ g_friend_idx +'&startPage=' + page + '&endPage=' + (page + 4);
 
 				$.ajax({
 					type : 'GET',
 					url : myurl,
 					dataType : 'json',
 					success : function(result) {
-						data = result;
+						
+						data = result.list;
 						get_board_list(data);
 						page += 5;
-						
 						if (html != '') {
 							$('.body').html($('.body').html() + html);
 							max = $(document).height();
@@ -145,8 +102,6 @@ $(document).ready(function() {
 		
 		// 게시글 없음
 		else if(load==3) {
-			
-			
 		}
 	});
 });
@@ -160,11 +115,15 @@ function get_json(data) {
 	var content_data;
 	var comment_data;
 	var username;
+	var profile;
 	html = '';
+	
 	for (i = 0; i < data.length; i++) {
 		content_data = data[i].content;
-		username = data[i].username;
+		profile = data[i].user.profile;
+		username = data[i].user.username;
 		comment = '';
+		photo = '';
 		// 만약 코멘트가 존재할 경우
 		if (data[i].comment != null) {
 			comment_data = data[i].comment;
@@ -172,10 +131,10 @@ function get_json(data) {
 				comment += '<div class="comment_list">\
 								<div class="comment" style="display: block;">\
 									<a href="javascript:board('+ comment_data[k].user_idx +');">\
-										<img src="/crepas_story/resources/images/gd.jpg">\
+										<img src="/crepas_story/resources/images/'+ comment_data[k].user.profile+'">\
 									</a>\
 									<a href="javascript:board('+ comment_data[k].user_idx +');">\
-										<span>' + comment_data[k].username + '\</span>\
+										<span>' + comment_data[k].user.username + '\</span>\
 									</a>\
 									<span>\
 										<span>' + comment_data[k].content + '\</span>\
@@ -197,22 +156,36 @@ function get_json(data) {
 							</div>';
 			}
 		}
+		
+		// 게시글에 사진 추가
 		for(j=0; j<data[i].photo.length; j++ ) {
+			
+			// 사진이 없을 경우
 			if(data[i].photo[j].photoname == 'no_file'){
 				photo += '<div>\
 							<img onerror="this.style.display=\'none\'" alt=\'\' />\
 						</div>';
 			}
+			// 사진이 있을 경우
 			else if(data[i].photo[j].photoname != 'no_file'){
 				photo += '<div class="photo" style="display: block;">\
 									<img src="/crepas_story/resources/images/'+data[i].photo[j].photoname +'" width="200">\
 							</div>';
 			}
 		}
+		
 		content += '<div class="post_data">\
-						<a class="profile_img"  href="#">\
-							<img src="/crepas_story/resources/images/gd.jpg">\
+						<div class="pick_box">\
+							<a onclick="post_update_form($(this).parent().parent());saveScroll=$(\'body\').scrollTop();">수정</a>\
+							<a onclick="post_delete($(this).parent().parent());saveScroll=$(\'body\').scrollTop();">삭제</a>\
+						</div>\
+						<a class="profile_img">\
+							<img src="/crepas_story/resources/images/'+profile+'">\
 						</a>\
+						<a class="pick_view"\
+							onclick="saveScroll=$(\'body\').scrollTop();pickbox($(this).parent());"> <img\
+							src="/crepas_story/resources/images/more.png">\
+						</a> \
 						<a href="#">\
 							<div class="nick">' + username + '\</div>\
 						</a>\
@@ -440,10 +413,10 @@ function comment_list(data){
 			comment += '<div class="comment_list">\
 							<div class="comment" style="display: block;">\
 								<a href="javascript:board('+ list[k].user_idx +');">\
-									<img src="/crepas_story/resources/images/gd.jpg">\
+									<img src="/crepas_story/resources/images/'+ list[k].user.profile+'">\
 								</a>\
-								<a href="#">\
-									<span>' + list[k].username + '\</span>\
+								<a href="javascript:board('+ list[k].user_idx +');">\
+									<span>' + list[k].user.username + '\</span>\
 								</a>\
 								<span>\
 									<span>' + list[k].content + '\</span>\
@@ -491,7 +464,7 @@ function board(friend_idx) {
 	$('.body').html("");
 	
 	// 전역변수에 값 넣기
-	g_user_idx = friend_idx;
+	g_friend_idx = friend_idx;
 	
 	// 스크롤을 위한 조건설정
 	load = 2; // 친구의 피드
@@ -506,7 +479,7 @@ function board(friend_idx) {
 		dataType : 'json',
 		success : function(result) {
 			data = result.list;
-			g_username = result.user.username;
+			g_user = result.user;
 			
 
 			// 피드 불러오기
@@ -521,7 +494,7 @@ function board(friend_idx) {
 
 // 친구 피드
 function get_board_list(data) {
-	console.log(data);
+	
 	// 본 게시글
 	var content = '';
 	// 게시글의 댓글
@@ -534,36 +507,37 @@ function get_board_list(data) {
 	var comment_data;
 	// 게시글의 댓글
 	var username;
+	// 유저사진
+	var profile;
 	// 조건에 따라 버튼 추가
 	var button;
 	// 프로필
-	var profile;
+	var profile_page;
 	// 친구신청 버튼
 	var bt_friend = '';
 	
-
 	html = '';
 	
 	if($('.body').html()=="") {
-		if(b_friend=='no') {
-			bt_friend = '<a href="javascript:send_friend('+g_user_idx+', '+my_idx+');" onmouseover="$(this).css({background : \'#cccccc\', color : \'#888888\'});" onmouseleave="$(this).css({background : \'#777777\', color : \'white\'});">\
+		if(is_friend=='no') {
+			bt_friend = '<a href="javascript:send_friend('+g_friend_idx+', '+my_idx+');" onmouseover="$(this).css({background : \'#cccccc\', color : \'#888888\'});" onmouseleave="$(this).css({background : \'#777777\', color : \'white\'});">\
 							친구신청\
 						</a>';
 		}
-		else if(b_friend=='yes') {
+		else if(is_friend=='yes') {
 			bt_friend = '<a href="#" onmouseover="$(this).css({background : \'#cccccc\', color : \'#888888\'});" onmouseleave="$(this).css({background : \'#777777\', color : \'white\'});">\
 							친구정보\
 						</a>';
 		}
 		
 		// 반복문 돌기 전에 프로필 윈도우 추가
-		profile = '<!-- 메인(홈) -->\
+		profile_page = '<!-- 메인(홈) -->\
 					<div class="home">\
 						<a href="#">\
-							<img src="/crepas_story/resources/images/gd.jpg">\
+							<img src="/crepas_story/resources/images/' +g_user.profile+ '">\
 						</a>\
 						<a href="#">\
-							<div class="nick">'+g_username+'</div>\
+							<div class="nick">'+g_user.username+'</div>\
 						</a>\
 						<div class="home_menu">\
 							<a href="#" onmouseover="$(this).css({color : \'#778844\'});" onmouseleave="$(this).css({color : \'black\'});">\
@@ -575,17 +549,17 @@ function get_board_list(data) {
 							'+ bt_friend +'\
 						</div>\
 					</div>';
-		$('.body').html(profile);
+		$('.body').html(profile_page);
 	}
 	
 
 	for (i = 0; i < data.length; i++) {
 		content_data = data[i].content;
-		username = data[i].username;
+		username = data[i].user.username;
+		profile = data[i].user.profile;
 		comment = '';
 		button = '';
 		photo = '';
-		
 		
 		// 댓글이 있는 경우에만 불러옴
 		if (data[i].comment != null) {
@@ -600,10 +574,10 @@ function get_board_list(data) {
 				comment += '<div class="comment_list">\
 								<div class="comment" style="display: block;">\
 									<a href="javascript:board('+ comment_data[k].user_idx +');">\
-										<img src="/crepas_story/resources/images/gd.jpg">\
+										<img src="/crepas_story/resources/images/'+comment_data[k].user.profile+'">\
 									</a>\
 									<a href="javascript:board('+ comment_data[k].user_idx +');">\
-										<span>' + comment_data[k].username + '\</span>\
+										<span>' + comment_data[k].user.username + '\</span>\
 									</a>\
 									<span>\
 										<span>' + comment_data[k].content + '\</span>\
@@ -641,16 +615,14 @@ function get_board_list(data) {
 
 		content += '<div class="post_data">\
 						<a class="profile_img" href="#">\
-							<img src="/crepas_story/resources/images/gd.jpg">\
+							<img src="/crepas_story/resources/images/'+ profile +'">\
 						</a>\
 						<a href="#">\
 							<div class="nick">' + username + '\</div>\
 						</a>\
-						<div class="bundle">\
 						'+ photo +'\
 						<div class="content">\
 							' + content_data + '\
-						</div>\
 						</div>\
 						<div class="comment_write">\
 							<a href="#">\
@@ -672,7 +644,10 @@ function get_board_list(data) {
 	html+=content;
 }
 
+
+
 var pickbox_result=false;
+
 //pickbox(수정/삭제)
 function pickbox(obj){
 	
@@ -682,10 +657,9 @@ function pickbox(obj){
 	else
 		$(obj).find(".pick_box").css({display:"none"});
 	
-	$('body').scrollTop(saveScroll);
-	return;
-		
+	$('body').scrollTop(saveScroll);		
 }
+
 var menu_show=false;
 function Show_Menu(){
 	if(!menu_show){
@@ -698,34 +672,10 @@ function Show_Menu(){
 }
 
 
-
-
 /*-------------------------------------------------------------------------------------------------------------------------*/
 //친구신청
 
-/*function check_friend(friend_idx) {
-	if(friend_idx==my_idx){
-		location.href='index.do';
-		return;
-	}
-	
-	$.ajax({
-		type : 'GET',
-		url : 'check_friend.do',
-		data : {'user_idx':my_idx, 'friend_idx' : friend_idx},
-		dataType : 'json',
-		success : function(result) {
-			if(result.result=="yes"){
-				board(friend_idx);
-			}
-			else{
-				if(confirm("친구신청 하시겠습니까?")==false) return;
-				send_friend(friend_idx, my_idx);
-			}
-		}
-	});
-}*/
-
+// 친구인지 확인
 function check_friend(friend_idx) {
 	$.ajax({
 		type : 'GET',
@@ -733,18 +683,19 @@ function check_friend(friend_idx) {
 		data : {'user_idx':my_idx, 'friend_idx' : friend_idx},
 		dataType : 'json',
 		success : function(result) {
-			b_friend = result.result;
+			is_friend = result.result;
 		}
 	});
 }
 
 
-
+// 친구신청 보내기
 function send_friend(friend_idx, user_idx) {
 	if(confirm("친구신청 하시겠습니까?")==false) return;
 	location.href='friend_insert.do?user_idx='+user_idx+'&friend_idx='+friend_idx;
 }
 
+// 친구 삭제
 function friend_delete(friend_idx){
 	if(confirm("정말로 친구를 끊으시겠어요??")==false) return;
 	location.href='friend_delete.do?user_idx='+my_idx+'&friend_idx='+friend_idx;	

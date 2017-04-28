@@ -57,12 +57,12 @@
     <input type="text" name="addr">
   	</a>
   	</form>
-  	<a href="javascript:signup();">
-  		<button>회원가입</button>
-  	</a>
-  	<a href="javascript:$('.signup_form').css({visibility:'hidden'});">
-  		<button>취소</button>
-  	</a>
+  	<a href="javascript:signup($('#r_form'));">
+        <button>회원가입</button>
+     </a>
+     <a href="javascript:signup_cancel($('#r_form'));">
+        <button>취소</button>
+     </a>
   </div>
   <div class="Message">
       <div class="title">메세지</div>

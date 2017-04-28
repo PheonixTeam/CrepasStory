@@ -9,7 +9,6 @@ public class UserVo {
 	int user_idx;
 	String username, userid, password, birthday, phonenumber, addr, gender, profile;
 	
-	String filename;
 	MultipartFile photo;
 	List<FriendVo> friend_list;
 	
@@ -18,12 +17,6 @@ public class UserVo {
 	}
 	public void setFriend_list(List<FriendVo> friend_list) {
 		this.friend_list = friend_list;
-	}
-	public String getFilename() {
-		return filename;
-	}
-	public void setFilename(String filename) {
-		this.filename = filename;
 	}
 	public MultipartFile getPhoto() {
 		return photo;

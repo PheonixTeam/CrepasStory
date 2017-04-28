@@ -270,7 +270,6 @@ function previewFile() {
 
 			} else {
 				alert('이미지파일만 등록하세요');
-				upload = false;
 				return;
 			}
 		}

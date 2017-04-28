@@ -5,7 +5,15 @@ body {
 	margin: 0;
 	background: #eeeeee;
 }
+#bg_hide{
+	visibility:hidden;
+	position:absolute;
+	width:100%;
 
+	opacity:0.8;
+	background:#ffffff;
+	z-index:999;
+}
 nav {
 	z-index:5;
 	position: fixed;
@@ -51,7 +59,7 @@ nav>.search_form>input[type="text"] {
 
 nav>.search_form>a>img {
 	float: left;
-	margin-top: 26px;
+	margin-top: 15px;
 	margin-left: 10px;
 	background: #777777;
 	border-radius: 15%;
@@ -80,9 +88,12 @@ nav>.tools {
 		float:right;
 	}
 		.menu > span{
+			display:block;
 			padding: 3px 7px;
 			
 		}
+
+
 .modify_form {
 	visibility: hidden;
 	margin-left: calc(50% - 405px);
@@ -159,7 +170,6 @@ nav>.tools {
 	padding: 10px 30px;
 	width: 500px;
 }
-
 .pick_box{
 	display:none;
 	margin-top:8px;
@@ -204,7 +214,27 @@ nav>.tools {
 	border: 1px solid #cccccc;
 	border-radius: 50%;
 	max-width: 80px;
+	min-height: 80px;
 }
+.post_data > .bundle{
+	padding: 15px 0;
+	display:block;
+	float:left;
+	width:350px;
+	margin-left:60px;
+}
+.post_data > .bundle > img{
+	float:left;
+	
+}
+.post_data>.bundle>.content {
+	padding:10px 0;
+	float:left;
+	width: 350px;
+	line-height: 30px;
+
+}
+
 .post_data > .pick_view{
 	margin-top: 10px;
 	display:inline-block;
@@ -215,19 +245,13 @@ nav>.tools {
 	max-width:30px;
 	transform: rotate(90deg);
 } 
-.post_data > .bundle{
-	padding: 15px 0;
-	display:block;
-	float:left;
-	width:350px;
-	margin-left:60px;
-}
-.post_data>.bundle>.content {
-	padding:10px 0;
-	float:left;
-	width: 350px;
-	line-height: 30px;
 
+.post_data>.content {
+	float: left;
+	width: 500px;
+	line-height: 30px;
+	text-align: center;
+	display: inline-block;
 }
 
 .editor {
@@ -350,7 +374,8 @@ nav>.tools {
 }
 
 .comment_list>.comment>a>img {
-	width: 50px;
+	max-width: 50px;
+	min-height: 50px;
 	border-radius: 50%;
 	border: 1px solid #cccccc;
 }
@@ -388,6 +413,7 @@ nav>.tools {
 	border-radius: 50%;
 	border: 1px solid #cccccc;
 	max-width: 130px;
+	min-height:130px;
 }
 
 .profile>a {
@@ -416,6 +442,7 @@ nav>.tools {
 	margin: 0 15px;
 	float: left;
 	max-width: 70px;
+	min-height: 70px;
 	border-radius: 50%;
 	border: 1px solid #cccccc;
 }
@@ -431,10 +458,7 @@ nav>.tools {
 .friend>button {
 	visibility: hidden;
 	float: left;
-	margin-top: 30px;
-}
-.friend > button > img{
-	max-width:18px;
+	margin-top: 28px;
 }
 
 
@@ -475,6 +499,7 @@ nav>.tools {
 	border: 1px solid #cccccc;
 	border-radius: 50%;
 	max-width: 100px;
+	min-height:100px;
 	float : left;
 }
 
@@ -513,16 +538,134 @@ nav>.tools {
 	
 }
 
-//-----------------------------------------------------
-// ´Ù¿î
+/* ----------------------------------------------------- */
+/* ´Ù¿î */
 
 
-//-----------------------------------------------------
-// ½Â¿ë
+/* ----------------------------------------------------- */
+/* ½Â¿ë */
 
+#photo_disp {
+	z-index:1000;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 700px;
+	height: 500px;
+	background-color: #ffffff;
+	box-shadow: 5px 5px 3px #cccccc;
+}
 
+#photo_box{
+	width: 100%;
+	height: 500px;
+	border: 1px solid black;
+	box-shadow: 3px 3px 5px #cccccc;
+	margin: auto;
+	overflow-y: scroll;
+}
 
+.photo_type {
+	width:180px;
+	height:240px;
+	background:#f2f2f2;
+	font-weight:bold;
+	border: 1px black solid;
+	float: left;
+	margin: 35px;
+}
+.photo_type > div{
+	float:left;
+	line-height:23px;
+	margin-top:13px;
+	margin-left:6px;
+	color:#ffffff;
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
 
+.photo_type img {
+	float:left;
+	width: 100%;
+	height: 150px;
+}
+
+#cancel {
+	text-align: center;
+	clear: both;
+}
+#cancel  > img{
+	padding: 3px 3px;
+	background:#ffffff;
+	border-radius:50%;
+	border: 1px solid #e1e1e1;
+}
+
+.user_modify_form {
+   visibility: hidden;
+   margin-left: calc(50% - 205px);
+   margin-top: calc(50% - 644px);
+   border-radius: 25px;
+   border: 1px solid #777777;
+   float: left;
+   text-align: center;
+   width: 300px;
+   background: rgba(255, 255, 255, 0.99);
+   position: fixed;
+   padding: 20px 5px;
+}
+
+.user_modify_form>a{
+   text-decoration: none;
+}
+
+.user_modify_form > form > a > img{
+   margin-top:15px;
+   width:150px;
+}
+
+.user_modify_form > form > input[type="file"]{
+   width:0px;
+   height:0px;
+   visibility:hidden;
+}
+
+.user_modify_form > form > a > input {
+   outline: none;
+   display: block;
+   width: 245px;
+   margin: 14px 27.5px;
+   padding: 5px 15px;
+   border-radius: 30px;
+   border: 1px solid #cccccc;
+}
+
+.user_modify_form> form >input {
+   outline: none;
+   display: block;
+   width: 245px;
+   margin: 14px 27.5px;
+   padding: 5px 15px;
+   border-radius: 30px;
+   border: 1px solid #cccccc;
+   text-decoration: none;
+}
+
+.user_modify_form>div {
+   margin-left: 50px;
+   width: 200px;
+   padding-bottom: 15px;
+   padding-top: 5px;
+   margin-bottom: 7px;
+   border-bottom: 1px solid #777777;
+}
+
+.user_modify_form>a>button {
+   color: #ffffff;
+   background: #555555;
+   padding: 10px 30px;
+   border-radius: 30px;
+   border: 0;
+}
 
 
 

@@ -83,11 +83,11 @@ public class UserController {
 
 		map = new HashMap();
 
-		String filename = "no_file";
+		String filename = "profile.jpg";
 
 		if (!vo.getPhoto().isEmpty()) {
 			filename = vo.getPhoto().getOriginalFilename();
-			String web_path = "/resources/img/";
+			String web_path = "/resources/images/";
 			String abs_path = application.getRealPath(web_path);
 
 			System.out.println(abs_path);
@@ -163,51 +163,49 @@ public class UserController {
 	}
 
 	// 회원 정보 수정 (JSON)
-	@RequestMapping("/project/user_modify.do")
-	@ResponseBody
-	public Map user_modify(UserVo vo) throws Exception {
+	   @RequestMapping("/user_modify.do")
+	   @ResponseBody
+	   public Map user_modify(UserVo vo) throws Exception {
 
-		map = new HashMap();
+	      map = new HashMap();
 
-		String filename = "no_file";
+	      String filename = "profile.jpg";
 
-		if (!vo.getPhoto().isEmpty()) { // 사진잉ㅆ으면
-			filename = vo.getPhoto().getOriginalFilename();
-			String web_path = "/resources/img/";
-			String abs_path = application.getRealPath(web_path);
+	      if (!vo.getPhoto().isEmpty()) { // 사진잉ㅆ으면
+	         filename = vo.getPhoto().getOriginalFilename();
+	         String web_path = "/resources/images/";
+	         String abs_path = application.getRealPath(web_path);
 
-			System.out.println(abs_path);
+	         System.out.println(abs_path);
 
-			File save = new File(abs_path, filename);
+	         File save = new File(abs_path, filename);
 
-			while (save.exists()) {
-				long time = System.currentTimeMillis();
+	         while (save.exists()) {
+	            long time = System.currentTimeMillis();
 
-				int index = filename.lastIndexOf(".");
-				String f_name = filename.substring(0, index);
-				String f_ext = filename.substring(index);
+	            int index = filename.lastIndexOf(".");
+	            String f_name = filename.substring(0, index);
+	            String f_ext = filename.substring(index);
 
-				filename = String.format("%s_%d%s", f_name, time, f_ext);
-				save = new File(abs_path, filename);
-			}
+	            filename = String.format("%s_%d%s", f_name, time, f_ext);
+	            save = new File(abs_path, filename);
+	         }
 
-			vo.getPhoto().transferTo(save);
-			vo.setProfile(filename);
+	         vo.getPhoto().transferTo(save);
+	         vo.setProfile(filename);
 
-		}
+	      }
 
-		int res = user_dao.update(vo);
-		// System.out.println(vo.getProfile());
+	      int res = user_dao.update(vo);
+	      // System.out.println(vo.getProfile());
 
-		// res 결과에 따라 result 값 처리
-		String result = "no";
+	      // res 결과에 따라 result 값 처리
+	      String result = "no";
 
-		if (res == 1)
-			result = "yes";
-		map.put("result", result);
+	      if (res == 1)
+	         result = "yes";
+	      map.put("result", result);
 
-		map.put("user_idx", vo.getUser_idx());
-
-		return map;
-	}
+	      return map;
+	   }
 }
