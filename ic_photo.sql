@@ -1,33 +1,33 @@
 
 create sequence seq_photo_idx;
 
--- ±âÁ¸ DB
+-- ê¸°ì¡´ DB
 /*create table ic_photo (
-	photo_idx int,								-- »çÁø ÀÏ·Ã¹øÈ£
-	user_idx int,								-- »çÁø¾÷·Îµå À¯Àú
-	photoname varchar2(100),					-- »çÁø ÀÌ¸§
-	photo varchar2(255),						-- ÀÌ¹ÌÁö
-	photosize varchar2(255),					-- »çÁø »çÀÌÁî
-	regdate date								-- ¾÷·Îµå ³¯Â¥
+	photo_idx int,							-- ì‚¬ì§„ ì¼ë ¨ë²ˆí˜¸
+	user_idx int,							-- ì‚¬ì§„ì—…ë¡œë“œ ìœ ì €
+	photoname varchar2(100),					-- ì‚¬ì§„ ì´ë¦„
+	photo varchar2(255),						-- ì´ë¯¸ì§€
+	photosize varchar2(255),					-- ì‚¬ì§„ ì‚¬ì´ì¦ˆ
+	regdate date							-- ì—…ë¡œë“œ ë‚ ì§œ
 )*/
 
--- ¼öÁ¤ DB (photo, photosize »èÁ¦ / post_idx Ãß°¡)
+-- ìˆ˜ì • DB (photo, photosize ì‚­ì œ / post_idx ì¶”ê°€)
 create table ic_photo (
-	photo_idx int,								-- photo ÀÏ·Ã¹øÈ£
-	user_idx int,								-- user ÀÏ·Ã¹øÈ£ (¿Ü·¡Å°)
-	post_idx int,								-- post ÀÏ·Ã¹øÈ£ (¿Ü·¡Å°)
-	photoname varchar2(100),					-- ¾÷·ÎµåÇÑ ÀÌ¹ÌÁö ÀúÀå
-	regdate date								-- ¾÷·Îµå ³¯Â¥
+	photo_idx int,							-- photo ì¼ë ¨ë²ˆí˜¸
+	user_idx int,							-- user ì¼ë ¨ë²ˆí˜¸ (ì™¸ë˜í‚¤)
+	post_idx int,							-- post ì¼ë ¨ë²ˆí˜¸ (ì™¸ë˜í‚¤)
+	photoname varchar2(100),					-- ì—…ë¡œë“œí•œ ì´ë¯¸ì§€ ì €ì¥
+	regdate date							-- ì—…ë¡œë“œ ë‚ ì§œ
 )
 
 alter table ic_photo add constraint pk_photo_idx primary key(photo_idx)
 
--- ¿Ü·¡Å° ¼³Á¤ (foreign)
-	-- user_idx Á¤º¸ ¿Ü·¡Å° ¼³Á¤
+-- ì™¸ë˜í‚¤ ì„¤ì • (foreign)
+	-- user_idx ì •ë³´ ì™¸ë˜í‚¤ ì„¤ì •
 alter table ic_photo add constraint fk_photo_uidx foreign key(user_idx)
 	references ic_user(user_idx) on delete cascade
 
-	-- post_idx Á¤º¸ ¿Ü·¡Å° ¼³Á¤
+	-- post_idx ì •ë³´ ì™¸ë˜í‚¤ ì„¤ì •
 alter table ic_photo add constraint fk_photo_pidx foreign key(post_idx)
 	references ic_post(post_idx) on delete cascade
 	
