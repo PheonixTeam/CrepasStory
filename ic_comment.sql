@@ -1,19 +1,19 @@
--- ÀÏ·Ã¹øÈ£
+-- ì¼ë ¨ë²ˆí˜¸
 create sequence seq_comment_idx
 
 create table ic_comment(
-	comment_idx int,										-- ´ñ±Û ÀÏ·Ã¹øÈ£
-	post_idx int,											-- ÇØ´ç ´ñ±ÛÀÌ ´Ş¸®´Â Æ÷½ºÆ® ÀÏ·Ã¹øÈ£
-	user_idx int,											-- ´ñ±Û¾´ÀÌ ÀÏ·Ã¹øÈ£							
-	username varchar2(100),									-- ´ñ±Û¾´ÀÌ ÀÌ¸§(user table)
-	content varchar2(255) not null,							-- ´ñ±Û ³»¿ë
-	regdate date											-- ´ñ±Û µî·Ï ÀÏÀÚ
+	comment_idx int,				-- ëŒ“ê¸€ ì¼ë ¨ë²ˆí˜¸
+	post_idx int,					-- í•´ë‹¹ ëŒ“ê¸€ì´ ë‹¬ë¦¬ëŠ” í¬ìŠ¤íŠ¸ ì¼ë ¨ë²ˆí˜¸
+	user_idx int,					-- ëŒ“ê¸€ì“´ì´ ì¼ë ¨ë²ˆí˜¸							
+	username varchar2(100),				-- ëŒ“ê¸€ì“´ì´ ì´ë¦„(user table)
+	content varchar2(255) not null,			-- ëŒ“ê¸€ ë‚´ìš©
+	regdate date					-- ëŒ“ê¸€ ë“±ë¡ ì¼ì
 )
 
---±âº»Å°¼³Á¤
+--ê¸°ë³¸í‚¤ì„¤ì •
 alter table ic_comment add constraint pk_comment_cidx primary key(comment_idx)
 
---¿Ü·¡Å° ¼³Á¤
+--ì™¸ë˜í‚¤ ì„¤ì •
 alter table ic_comment add constraint fk_comment_pidx foreign key(post_idx) references ic_post(post_idx) on delete cascade
 alter table ic_comment add constraint fk_comment_uidx foreign key(user_idx) references ic_user(user_idx) on delete cascade
 
@@ -22,8 +22,8 @@ insert into ic_comment values(
 	seq_comment_idx.nextVal,
 	20,
 	1,
-	'ÀÌ´Ù¿î',
-	'¾È´¨',
+	'ì´ë‹¤ìš´',
+	'ì•ˆë‡½',
 	sysdate
 )
 
