@@ -363,7 +363,7 @@ function user_update(f){
 							<div class="photo" style="display: block;">
 								<img
 									src="${ pageContext.request.contextPath }/resources/images/${ photo.photoname }"
-									width="200">
+									width="400">
 							</div>
 						</c:if>
 					</c:forEach>

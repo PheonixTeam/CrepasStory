@@ -90,7 +90,7 @@ public class UserController {
 			String web_path = "/resources/images/";
 			String abs_path = application.getRealPath(web_path);
 
-			System.out.println(abs_path);
+			//System.out.println(abs_path);
 
 			File save = new File(abs_path, filename);
 
